@@ -7,6 +7,7 @@
         "@xterm/xterm": "latest",
         "@xterm/addon-fit": "latest",
         "@j-cake/jcake-utils": "latest",
+        "node-pty": "latest",
         "chalk": "latest"
     },
     "scripts": {

@@ -1,6 +1,7 @@
 import {ItemView, WorkspaceLeaf} from "obsidian";
 import * as xterm from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
+import * as pty from 'node-pty';
 
 import type { ShellProfile } from "./main.js";
 
@@ -15,6 +16,8 @@ export default class TerminalView extends ItemView implements TerminalState {
     terminal: xterm.Terminal;
     fit: FitAddon;
     
+    child: pty.IPty;
+
     constructor(leaf: WorkspaceLeaf, private profile: ShellProfile) {
         super(leaf);
         this.terminal = new xterm.Terminal({
@@ -22,6 +25,11 @@ export default class TerminalView extends ItemView implements TerminalState {
         });
         
         this.terminal.loadAddon(this.fit = new FitAddon());
+
+        this.child = pty.spawn('bash', [], {
+            cols: this.terminal.cols,
+            rows: this.terminal.rows
+        });
     }
     
     getViewType(): string {
@@ -40,6 +48,14 @@ export default class TerminalView extends ItemView implements TerminalState {
         this.fit.fit();
         this.containerEl.addEventListener("resize", _ => this.fit.fit());
         
+        this.terminal.on('data', data => this.child.write(data));
+        this.child.on('data', data => this.terminal.write(data));
+
+        term.on('resize', size => this.terminal.resize(
+            Math.max(size ? size.cols : term.cols, 1),
+            Math.max(size ? size.rows : term.rows, 1)
+        ));
+
         this.terminal.open(container as HTMLElement);
     }
 }
