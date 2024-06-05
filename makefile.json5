@@ -16,8 +16,8 @@
             run: "cat manifest.json | jq -r '.' > build/manifest.json"
         },
         'build/styles.css': {
-            dependencies: ['styles.css'],
-            run: "cp styles.css build/styles.css"
+            dependencies: ['styles.css', 'node_modules/@xterm/xterm/css/xterm.css'],
+            run: "esbuild styles.css --outdir=build --bundle"
         },
 
         // phony

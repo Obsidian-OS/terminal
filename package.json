@@ -4,6 +4,8 @@
     "version": "0.1.0",
     "type": "module",
     "dependencies": {
+        "@xterm/xterm": "latest",
+        "@xterm/addon-fit": "latest",
         "@j-cake/jcake-utils": "latest",
         "chalk": "latest"
     },
