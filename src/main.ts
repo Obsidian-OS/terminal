@@ -33,17 +33,3 @@ export class SettingsTab extends PluginSettingTab {
 
     }
 }
-
-export class PromptSearchEngineSettings extends Modal {
-    private name: string = '';
-    private href: string = '';
-    private q: string = '';
-
-    constructor(app: App, private plugin: ContentType, private afterClose: () => void) {
-        super(app);
-    }
-
-    onOpen(): void {
-
-    }
-}
