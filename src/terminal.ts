@@ -1,7 +1,7 @@
 import {ItemView, WorkspaceLeaf} from "obsidian";
 import * as xterm from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
-import * as pty from 'node-pty';
+import type * as pty from 'node-pty';
 
 import type { ShellProfile } from "./main.js";
 
@@ -28,7 +28,8 @@ export default class TerminalView extends ItemView implements TerminalState {
 
         this.child = pty.spawn('bash', [], {
             cols: this.terminal.cols,
-            rows: this.terminal.rows
+            rows: this.terminal.rows,
+            useConpty: false 
         });
     }
     

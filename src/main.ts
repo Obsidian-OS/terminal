@@ -1,6 +1,9 @@
+import module from "node:module";
+import * as path from "node:path";
 import {App, Modal, Notice, Plugin, PluginSettingTab, Setting} from 'obsidian';
 
 import TerminalView, { TERMINAL_VIEW } from './terminal.js';
+import pkg from "../package.json";
 
 export interface TerminalSettings {
     profiles: Record<string, ShellProfile>,
@@ -22,17 +25,23 @@ export interface ShellProfile {
 
 export default class Terminal extends Plugin {
     settings: TerminalSettings = default_settings;
+    require: <T>(module: string) => T = () => { throw new Error("require not initialised") };
 
     async onload() {
+        const pty = await import("node-pty");
+        console.log(pty);
+
         await this.loadSettings();
         this.addSettingTab(new SettingsTab(this.app, this));
         this.registerView(TERMINAL_VIEW, leaf => new TerminalView(leaf, this.settings.profiles[this.settings.default]));
+
+        console.log(path.join(this.app.vault.adapter.basePath, this.app.vault.configDir, "plugins", pkg.name));
 
         this.addCommand({
             id: "open-new-terminal-tab",
             name: "New Terminal Tab",
             callback: async () => await this.app.workspace.getLeaf(true).setViewState({ type: TERMINAL_VIEW, active: true })
-            });
+        });
     }
 
     async loadSettings() {
